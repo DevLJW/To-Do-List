@@ -11,6 +11,10 @@ const createTodo = function () {
     newLi.classList.toggle("complete"); //li태그에 class 이름 추가
   });
 
+  newLi.addEventListener("dblclick", () => {
+    newLi.remove();
+  });
+
   newspan.textContent = todoinput.value;
   newLi.appendChild(newBtn);
   newLi.appendChild(newspan);
@@ -20,5 +24,13 @@ const createTodo = function () {
 const keyCodeCheck = function () {
   if (window.event.keyCode === 13 && todoinput.value !== "") {
     createTodo();
+  }
+};
+
+const deleteAll = function () {
+  // li 태그 전부 가져오기
+  const liList = document.querySelectorAll("li");
+  for (let i = 0; i < liList.length; i++) {
+    liList[i].remove();
   }
 };
