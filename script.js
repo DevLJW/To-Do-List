@@ -8,7 +8,8 @@ const createTodo = function () {
   const newBtn = document.createElement("button");
 
   newBtn.addEventListener("click", () => {
-    newLi.classList.toggle("complete"); //li태그에 class 이름 추가
+    //li태그에 complete라는 이름을 가진 클래스 추가
+    newLi.classList.toggle("complete");
   });
 
   newLi.addEventListener("dblclick", () => {
@@ -28,9 +29,23 @@ const keyCodeCheck = function () {
 };
 
 const deleteAll = function () {
-  // li 태그 전부 가져오기
+  // li 태그 전부 가져오기(배열형태(안의 데이터는 객체))
   const liList = document.querySelectorAll("li");
   for (let i = 0; i < liList.length; i++) {
     liList[i].remove();
+  }
+};
+
+const saveItemsFn = function () {
+  const saveItems = [];
+  for (i = 0; i < todolist.children.length; i++) {
+    const todoObj = {
+      //li 태그 i번째 태그가 가지고 있는 span 태그 텍스트값 가져오기
+      contents: todolist.children[i].querySelector("span").textContent,
+      //li태그 i번째 태그가 가지고 있는 클래스 안에 컴플리트 라는 클래스가 존재하는지
+      complete: todolist.children[i].classList.contains("complete"),
+    };
+
+    saveItems.push(todo);
   }
 };
