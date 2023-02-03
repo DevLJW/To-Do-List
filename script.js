@@ -2,7 +2,7 @@ const todoinput = document.querySelector("#todo-input");
 const todolist = document.querySelector("#todo-list");
 
 //원본데이터 타입으로 변환(객체 타입으로)
-const savedTodoList = JSON.parse(localStorage.getItem("saved-item"));
+const savedTodoList = JSON.parse(localStorage.getItem("saved-items"));
 
 const createTodo = function (storageData) {
   let todoContents = todoinput.value; //저장해논 값이 없는경우
@@ -22,7 +22,13 @@ const createTodo = function (storageData) {
 
   newLi.addEventListener("dblclick", () => {
     newLi.remove();
+    saveItemsFn();
   });
+
+  //옵셔널 체이닝 : 데이터가 없는경우 if문 무시하고 다음구문으로 넘어간다.
+  if (storageData?.complete === true) {
+    newLi.classList.add("complete");
+  }
 
   newspan.textContent = todoContents;
   newLi.appendChild(newBtn);
@@ -44,6 +50,8 @@ const deleteAll = function () {
   for (let i = 0; i < liList.length; i++) {
     liList[i].remove();
   }
+
+  saveItemsFn();
 };
 
 const saveItemsFn = function () {
@@ -61,11 +69,16 @@ const saveItemsFn = function () {
 
   //로컬스토리지에는 String 형식 데이터만 저장 가능.
   //객체 타입을 --> String 형식으로 변환 해줘야됨.
-
-  localStorage.setItem("saved-items", JSON.stringify(saveItems)); //객체 --> 문자열변환
+  if (saveItems.length === 0) {
+    //데이터가 없는경우
+    localStorage.removeItem("saved-items");
+  } else {
+    localStorage.setItem("saved-items", JSON.stringify(saveItems)); //객체 --> 문자열변환
+  }
 };
 
 if (savedTodoList) {
+  //로컬에 저장해논 데이터가 있을떄
   for (let i = 0; i < savedTodoList.length; i++) {
     createTodo(savedTodoList[i]); //표현식 호이스팅 때문에 밑에 내려주기
   }
