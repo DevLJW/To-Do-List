@@ -1,8 +1,15 @@
 const todoinput = document.querySelector("#todo-input");
+const todolist = document.querySelector("#todo-list");
 
-const createTodo = function () {
-  const todolist = document.querySelector("#todo-list");
+//원본데이터 타입으로 변환(객체 타입으로)
+const savedTodoList = JSON.parse(localStorage.getItem("saved-item"));
 
+const createTodo = function (storageData) {
+  let todoContents = todoinput.value; //저장해논 값이 없는경우
+  if (storageData) {
+    //저장해논 값이 있는경우
+    todoContents = storageData.contents;
+  }
   const newLi = document.createElement("li"); //새로운 li태그
   const newspan = document.createElement("span"); //새로운 span태그
   const newBtn = document.createElement("button");
@@ -10,18 +17,21 @@ const createTodo = function () {
   newBtn.addEventListener("click", () => {
     //li태그에 complete라는 이름을 가진 클래스 추가
     newLi.classList.toggle("complete");
+    saveItemsFn();
   });
 
   newLi.addEventListener("dblclick", () => {
     newLi.remove();
   });
 
-  newspan.textContent = todoinput.value;
+  newspan.textContent = todoContents;
   newLi.appendChild(newBtn);
   newLi.appendChild(newspan);
   todolist.appendChild(newLi); //기존에 있던 todo-list아이디에 값 붙히기
-  todoinput.value = " ";
+  todoinput.value = "";
+  saveItemsFn();
 };
+
 const keyCodeCheck = function () {
   if (window.event.keyCode === 13 && todoinput.value !== "") {
     createTodo();
@@ -46,6 +56,17 @@ const saveItemsFn = function () {
       complete: todolist.children[i].classList.contains("complete"),
     };
 
-    saveItems.push(todo);
+    saveItems.push(todoObj);
   }
+
+  //로컬스토리지에는 String 형식 데이터만 저장 가능.
+  //객체 타입을 --> String 형식으로 변환 해줘야됨.
+
+  localStorage.setItem("saved-items", JSON.stringify(saveItems)); //객체 --> 문자열변환
 };
+
+if (savedTodoList) {
+  for (let i = 0; i < savedTodoList.length; i++) {
+    createTodo(savedTodoList[i]); //표현식 호이스팅 때문에 밑에 내려주기
+  }
+}
