@@ -83,3 +83,20 @@ if (savedTodoList) {
     createTodo(savedTodoList[i]); //표현식 호이스팅 때문에 밑에 내려주기
   }
 }
+
+const accesToGeo = function (postion) {
+  const positionObj = {
+    latitude: postion.coords.latitude,
+    longitude: postion.coords.longitude,
+  };
+
+  console.log(positionObj);
+};
+
+const askForLocation = function () {
+  navigator.geolocation.getCurrentPosition(accesToGeo, (err) => {
+    console.log(err);
+  });
+};
+
+askForLocation();
