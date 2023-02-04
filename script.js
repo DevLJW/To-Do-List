@@ -84,13 +84,24 @@ if (savedTodoList) {
   }
 }
 
+const weatherSearch = function (postion) {
+  //fetch 매서드는 JavaScript에서 서버로 네트워크 요청을 보내고 응답을 받을 수 있도록 해주는 매서드이다.
+  //Get방식
+  const openWeatherRes = fetch(
+    `https://api.openweathermap.org/data/2.8/onecall?lat=${postion.latitude}&lon=${postion.longitude}&appid=5b4efe2cb81f20d788fed862e3257f38`
+  ).then((res) => {
+    //통신이 완료된 후, then 메소드 내부 실행
+    console.log(res);
+  });
+};
+
 const accesToGeo = function (postion) {
   const positionObj = {
     latitude: postion.coords.latitude,
     longitude: postion.coords.longitude,
   };
 
-  console.log(positionObj);
+  weatherSearch(positionObj);
 };
 
 const askForLocation = function () {
