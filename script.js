@@ -39,7 +39,7 @@ const createTodo = function (storageData) {
 };
 
 const keyCodeCheck = function () {
-  if (window.event.keyCode === 13 && todoinput.value !== "") {
+  if (window.event.keyCode === 13 && todoinput.value.trim() !== "") {
     createTodo();
   }
 };
@@ -61,7 +61,7 @@ const saveItemsFn = function () {
       //li 태그 i번째 태그가 가지고 있는 span 태그 텍스트값 가져오기
       contents: todolist.children[i].querySelector("span").textContent,
       //li태그 i번째 태그가 가지고 있는 클래스 안에 컴플리트 라는 클래스가 존재하는지
-      complete: todolist.children[i].classList.contains("complete"),
+      complete: todolist.children[i].classList.contains("complete"), //complete가 존재하면 true반환
     };
 
     saveItems.push(todoObj);
@@ -88,11 +88,18 @@ const weatherSearch = function (postion) {
   //fetch 매서드는 JavaScript에서 서버로 네트워크 요청을 보내고 응답을 받을 수 있도록 해주는 매서드이다.
   //Get방식
   const openWeatherRes = fetch(
-    `https://api.openweathermap.org/data/2.8/onecall?lat=${postion.latitude}&lon=${postion.longitude}&appid=5b4efe2cb81f20d788fed862e3257f38`
-  ).then((res) => {
-    //통신이 완료된 후, then 메소드 내부 실행
-    console.log(res);
-  });
+    `https://api.openweathermap.org/data/2.5/weather?lat=${postion.latitude}&lon=${postion.longitude}&appid=5b4efe2cb81f20d788fed862e3257f38`
+  )
+    .then((res) => {
+      //통신이 완료된 후, then 메소드 내부 실행
+      return res.json(); //응답 헤더나 바디가 있는경우 .json()사용
+    })
+    .then((json) => {
+      console.log(json.name, json.weather[0].description);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 };
 
 const accesToGeo = function (postion) {
