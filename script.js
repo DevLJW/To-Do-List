@@ -84,11 +84,18 @@ if (savedTodoList) {
   }
 }
 
-const weatherSearch = function (postion) {
+const weatherDataActive = function ({ location, weather }) {
+  const locationNameTag = document.querySelector("#weather_id");
+  locationNameTag.textContent = location;
+  document.body.style = `url(./Images/${weather}.jpg)`;
+};
+
+const weatherSearch = function ({ latitude, longitude }) {
+  //5
   //fetch 매서드는 JavaScript에서 서버로 네트워크 요청을 보내고 응답을 받을 수 있도록 해주는 매서드이다.
   //Get방식
   const openWeatherRes = fetch(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${postion.latitude}&lon=${postion.longitude}&appid=5b4efe2cb81f20d788fed862e3257f38`
+    `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=5b4efe2cb81f20d788fed862e3257f38`
   )
     .then((res) => {
       //통신이 완료된 후, then 메소드 내부 실행
@@ -96,25 +103,35 @@ const weatherSearch = function (postion) {
     })
     .then((json) => {
       console.log(json.name, json.weather[0].description);
+      const weatherdata = {
+        location: json.name,
+        weather: json.weather[0].name,
+      };
+      weatherDataActive(weatherdata);
     })
     .catch((err) => {
       console.error(err);
     });
 };
 
-const accesToGeo = function (postion) {
+const accesToGeo = function ({ coords }) {
+  //3
+  const { latitude, longitude } = coords;
+
   const positionObj = {
-    latitude: postion.coords.latitude,
-    longitude: postion.coords.longitude,
+    //short hand property
+    latitude,
+    longitude,
   };
 
-  weatherSearch(positionObj);
+  weatherSearch(positionObj); //4
 };
 
 const askForLocation = function () {
+  //2
   navigator.geolocation.getCurrentPosition(accesToGeo, (err) => {
     console.log(err);
   });
 };
 
-askForLocation();
+askForLocation(); //1
