@@ -1,5 +1,6 @@
 const todoinput = document.querySelector("#todo-input");
 const todolist = document.querySelector("#todo-list");
+const savedWeatherData = JSON.parse(localStorage.getItem("saved-weather"));
 
 //원본데이터 타입으로 변환(객체 타입으로)
 const savedTodoList = JSON.parse(localStorage.getItem("saved-items"));
@@ -85,9 +86,33 @@ if (savedTodoList) {
 }
 
 const weatherDataActive = function ({ location, weather }) {
+  const weatherMainList = [
+    "Clear",
+    "Clouds",
+    "Drizzle",
+    "Rain",
+    "Snow",
+    "Thunderstorm",
+  ];
+
+  weather = weatherMainList.includes(weather) ? weather : "Fog";
+
   const locationNameTag = document.querySelector("#weather_id");
   locationNameTag.textContent = location;
   document.body.style = `url(./Images/${weather}.jpg)`;
+
+  //이전에 통신했을때가 현재 통신했을때 지역이 다르다면 || 이전에 통신했던날씨와 현재날씨가 다르다면
+  //지역이 다른데 날씨가 같다면 저장, 지역이 같은데 날씨가 다를경우도 저장(or)
+  if (
+    !savedWeatherData ||
+    savedWeatherData.location !== location ||
+    savedWeatherData.weather !== weather
+  ) {
+    localStorage.setItem(
+      "saved-weather",
+      JSON.stringify({ location, weather })
+    );
+  }
 };
 
 const weatherSearch = function ({ latitude, longitude }) {
@@ -135,3 +160,7 @@ const askForLocation = function () {
 };
 
 askForLocation(); //1
+
+if (savedWeatherData) {
+  weatherDataActive(savedWeatherData);
+}
